@@ -1,4 +1,5 @@
 #include "Matrix.hpp"
+#include "MatrixAccess.cpp"
 #include <iostream>
 #include <cstddef>
 #include <stdexcept>
@@ -69,7 +70,13 @@ Matrix<Elem,dim>::~Matrix()
 }
 
 template <typename Elem,std::size_t dim>
-Elem Matrix<Elem,dim>::at(std::size_t i)const
+inline const Elem Matrix<Elem,dim>::at(std::size_t i)const
+{
+	return values[i];
+}
+
+template <typename Elem,std::size_t dim>
+inline Elem& Matrix<Elem,dim>::at(std::size_t i)
 {
 	return values[i];
 }
@@ -146,5 +153,47 @@ Matrix<Elem,dim>& Matrix<Elem,dim>::operator=(const Matrix& Mat)
 template <typename Elem,std::size_t dim>
 Matrix<Elem,dim>& Matrix<Elem,dim>::operator=(Matrix&& Mat)
 {
+	if (this!=&Mat)
+	{
+		if (dimensions!=Mat.getNbrOfDimensions())
+		{
+			dimensions =Mat.getNbrOfDimensions();
+			delete [] dimSizes;
+			dimSizes=new size_t[dimensions];
+		}
+		for (size_t i=0;i<dimensions;i++)
+			dimSizes[i]=Mat.getSizeOfDimension(i);
+		if (nbrOfElements!=Mat.getNbrOfElements())
+		{
+			nbrOfElements=Mat.getNbrOfElements();
+			delete[] values;
+			values=new Elem[nbrOfElements];
+		}
+		for (size_t i=0;i<nbrOfElements;i++)
+			values[i]=Mat.at(i);
+		delete[] Mat.dimSizes;
+		delete[] Mat.values;
+	}
+}
 
+template <typename Elem,std::size_t dim>
+bool Matrix<Elem,dim>::validIndex(std::size_t dimension,std::ptrdiff_t index)const
+{
+	return (0<=index && index<getSizeOfDimension(dim));
+}
+
+template <typename Elem,std::size_t dim>
+std::size_t Matrix<Elem,dim>::calculateIndex(std::ptrdiff_t* operatValues)const
+{
+	std::size_t index=0;
+	for (std::size_t i=0;i<getNbrOfDimensions;i++)
+		index+=getSizeOfDimension(i)*operatValues[i];
+	return index;
+}
+
+template <typename Elem,std::size_t dim>
+typename Matrix<Elem,dim>::MatrixAccess
+Matrix<Elem,dim>::operator[](std::ptrdiff_t i)
+{
+	return MatrixAccess(*this,i);
 }

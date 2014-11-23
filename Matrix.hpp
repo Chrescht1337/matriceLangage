@@ -12,9 +12,12 @@ class Matrix
         std::size_t* dimSizes;
         std::size_t dimensions;
         bool validDimensions(std::initializer_list<std::size_t> dims)const;
-        Elem at(std::size_t i)const;
-    public:
+        bool validIndex(std::size_t dimension,std::ptrdiff_t index)const;
+        std::size_t calculateIndex(std::ptrdiff_t* operatValues)const;
+        inline const Elem at(std::size_t i)const;
+        inline Elem& at(std::size_t i);
         class MatrixAccess;
+    public:
         Matrix(Elem value,std::initializer_list<std::size_t> dims);
         Matrix(const Matrix& Mat);
         Matrix(Matrix&& Mat);
@@ -24,6 +27,7 @@ class Matrix
         inline size_t getNbrOfElements() const;
         Matrix& operator=(const Matrix& Mat);
         Matrix& operator=(Matrix&& Mat);
+        Matrix<Elem,dim>::MatrixAccess operator[](std::ptrdiff_t i);
 
 };
 

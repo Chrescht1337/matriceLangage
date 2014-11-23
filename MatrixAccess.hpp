@@ -8,8 +8,10 @@ class Matrix<Elem,dim>::MatrixAccess
 	private:
 		Matrix<Elem,dim>& Mat;
 		std::ptrdiff_t* operatValues;
-		int operatCalls;
+		std::size_t operatCalls;
 	public:
 		MatrixAccess(Matrix<Elem,dim>& mat,std::ptrdiff_t firstValue);
-		MatrixAccess operator[](std::ptrdiff_t i);
-}
+		Matrix<Elem,dim>::MatrixAccess operator[](std::ptrdiff_t i);
+		operator Elem();
+};
+#endif

@@ -11,5 +11,7 @@ int main()
 	Matrix<int,4> t=Matrix<int,4>(0,{2,2,2,2});
 	k=t;
 	std::cout<<k.getSizeOfDimension(3)<<std::endl;
+	std::cout<<"allo"<<std::endl;
+	k[0][0][0][0]=99;
 	return 0;
 }
