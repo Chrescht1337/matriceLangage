@@ -126,6 +126,44 @@ inline size_t Matrix<Elem,dim>::getNbrOfElements() const
 }
 
 template <typename Elem,std::size_t dim>
+std::ostream& displayHelper(std::ostream& out, const Matrix<Elem,dim>& M,size_t i,size_t & t)const
+{
+	out<<"[ ";
+	if (i==M.getNbrOfDimensions())
+	{
+		for (size_t j=0;j<M.getSizeOfDimension(i);j++)
+		{
+			out<<M.at(t);
+			t++;
+		}
+	}
+	else
+	{
+		for(size_t j=0;j<M.getSizeOfDimension(i);j++)
+		{
+
+			out=M.displayHelper(out,M,i+1,t);
+		}
+	}
+	out<<" ]";
+	return out;
+}
+
+
+template <typename Elem,std::size_t dim>
+std::ostream& operator<< (std::ostream& out, const Matrix<Elem,dim>& M)
+{
+	size_t t=0;
+	out=M.displayHelper(out,M,0,t);
+	/*
+	for (std::size_t i=0;i<M.getNbrOfElements();i++)
+	{
+		out<<*p++<<' ';
+	}
+	out<<std::endl;*/
+	return out;
+}
+template <typename Elem,std::size_t dim>
 Matrix<Elem,dim>& Matrix<Elem,dim>::operator=(const Matrix& Mat)
 {
 	if (this!=&Mat)

@@ -12,6 +12,13 @@ class Matrix<Elem,dim>::MatrixAccess
 	public:
 		MatrixAccess(Matrix<Elem,dim>& mat,std::ptrdiff_t firstValue);
 		Matrix<Elem,dim>::MatrixAccess operator[](std::ptrdiff_t i);
-		operator Elem();
+		//operator Elem();
+};
+
+template<typename Elem,std::size_t dim>
+class Matrix<Elem,0>::MatrixAccess
+{
+	private:
+		Matrix<Elem,0>::MatrixAccess& Mat;
 };
 #endif

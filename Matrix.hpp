@@ -11,6 +11,9 @@ class Matrix
         std::size_t nbrOfElements;
         std::size_t* dimSizes;
         std::size_t dimensions;
+        template <typename T,size_t t>
+        friend std::ostream& operator<< (std::ostream&, const Matrix<T,t>&);
+        std::ostream& displayHelper(std::ostream& out,const Matrix<Elem,dim>& M, int i,Elem &p)const;
         bool validDimensions(std::initializer_list<std::size_t> dims)const;
         bool validIndex(std::size_t dimension,std::ptrdiff_t index)const;
         std::size_t calculateIndex(std::ptrdiff_t* operatValues)const;
@@ -30,5 +33,11 @@ class Matrix
         Matrix<Elem,dim>::MatrixAccess operator[](std::ptrdiff_t i);
 
 };
+/*
+template<typename Elem,size_t t=0>
+class Matrix
+{
 
+};
+*/
 #endif

@@ -33,6 +33,8 @@ Matrix<Elem,dim>::MatrixAccess::operator[](std::ptrdiff_t i)
 		throw std::out_of_range("Object not further subscriptable");
 }
 
+
+/*
 template <typename Elem,std::size_t dim>
 Matrix<Elem,dim>::MatrixAccess::operator Elem()
 {
@@ -44,3 +46,4 @@ Matrix<Elem,dim>::MatrixAccess::operator Elem()
 	else //operatCalls<nombre de composantes de Mat
 		throw std::out_of_range("Indexation incomplete ");
 }
+*/
