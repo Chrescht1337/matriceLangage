@@ -1,5 +1,5 @@
 #include "Matrix.cpp"
-#include "HelperMatrix.cpp"
+#include "OperatHandler.cpp"
 #include <iostream>
 #include <stdexcept>
 
@@ -17,9 +17,8 @@ int main()
 	std::cout<<"k.getSizeOfDimension(1) : "<<k.getSizeOfDimension(1)<<std::endl;
 	std::cout<<k.getSizeOfDimension(3)<<std::endl;
 	std::cout<<"==================================================="<<std::endl;
-	Matrix<int,4> t=Matrix<int,4>(0,{2,2,2,2});
-	//std::cout<<"allo"<<std::endl;
-	//k[0][0][0][0]=99;
+	Matrix<int,5> t=Matrix<int,5>(0,{2,2,2,2,2});
+	//k=t;
 	std::cout<<"==================================================="<<std::endl;
 	std::cout<<"Display Matrix p: "<<std::endl;
 	std::cout<<p<<std::endl;
@@ -36,7 +35,11 @@ int main()
 	std::cout<<eent[2]<<std::endl;
 	std::cout<<eent<<std::endl;
 	std::cout<<"==================================================="<<std::endl;
-	HelperMatrix<int,4> mmm(k);
-	std::cout<<"";
+	t[0][0][0][0][0]=9;
+	k[0][0][0][0]=t[0][0][0][0][0];
+	std::cout<<t[0][0][0][0][0]<<std::endl;
+	std::cout<<t<<std::endl;
+
 	return 0;
+
 }

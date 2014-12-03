@@ -3,15 +3,12 @@
 #include <cstddef>
 #include <stdexcept>
 
-
-
 template <typename Elem,std::size_t dim>
 Matrix<Elem,dim>::Matrix(Elem value,std::initializer_list<std::size_t> dims)
 {
 	if (validDimensions(dims)) //vérification des données
 	{
-		dimensions=dim;
-		dimSizes= new std::size_t[dimensions];
+		dimSizes= new std::size_t[dim];
 		int i = 0;
 		for (auto size : dims) //on remplit le vecteur des tailles composantes
 		{
@@ -38,20 +35,20 @@ Matrix<Elem,dim>::Matrix(Elem value,std::initializer_list<std::size_t> dims)
 template <typename Elem,std::size_t dim>
 Matrix<Elem,dim>::Matrix(const Matrix& Mat)
 {
-	dimensions=Mat.getNbrOfDimensions();
-	dimSizes=new size_t[dimensions];
-	for (size_t i=0;i<dimensions;i++)
-		dimSizes[i]=Mat.getSizeOfDimension(i);
-	nbrOfElements=Mat.getNbrOfElements();
+	//dimensions=Mat.dimensions;
+	dimSizes=new size_t[dim];
+	for (size_t i=0;i<dim;i++)
+		dimSizes[i]=Mat.dimSizes[i];
+	nbrOfElements=Mat.nbrOfElements;
 	values=new Elem[nbrOfElements];
 	for (size_t i=0;i<nbrOfElements;i++)
-		values[i]=Mat.at(i);
+		values[i]=Mat.values[i];
 }
 
 template <typename Elem,std::size_t dim>
 Matrix<Elem,dim>::Matrix(Matrix&& Mat)
 {
-	dimensions=Mat.dimensions;
+	//dimensions=Mat.dimensions;
 	dimSizes=Mat.dimSizes;
 	Mat.dimSizes=nullptr;
 	nbrOfElements=Mat.nbrOfElements;
@@ -64,18 +61,6 @@ Matrix<Elem,dim>::~Matrix()
 {
 	delete[] dimSizes;
 	delete[] values;
-}
-
-template <typename Elem,std::size_t dim>
-inline const Elem Matrix<Elem,dim>::at(std::size_t i)const
-{
-	return values[i];
-}
-
-template <typename Elem,std::size_t dim>
-inline Elem& Matrix<Elem,dim>::at(std::size_t i)
-{
-	return values[i];
 }
 
 template <typename Elem,std::size_t dim>
@@ -96,13 +81,14 @@ bool Matrix<Elem,dim>::validDimensions(std::initializer_list<std::size_t> dims) 
 			throw std::length_error("No dimensions specified");
 		return true;
 	}
-	else return false;
+	else
+		return false;
 }
 
 template <typename Elem,std::size_t dim>
 inline size_t Matrix<Elem,dim>::getSizeOfDimension(std::size_t i)const
 {
-	if (i<dimensions)
+	if (i<dim)
 	{
 		return dimSizes[i];
 	}
@@ -113,7 +99,7 @@ inline size_t Matrix<Elem,dim>::getSizeOfDimension(std::size_t i)const
 template <typename Elem,std::size_t dim>
 inline size_t Matrix<Elem,dim>::getNbrOfDimensions()const
 {
-	return dimensions;
+	return dim;
 }
 
 template <typename Elem,std::size_t dim>
@@ -126,12 +112,11 @@ template <typename Elem,std::size_t dim>
 inline void Matrix<Elem,dim>::displayHelper(std::ostream& out,size_t i,size_t & k)const
 {
 	out<<"[ ";
-	if (i==getNbrOfDimensions()-1)
+	if (i==dim-1)
 	{
 		for (size_t j=0;j<getSizeOfDimension(i);j++)
 		{
-			//std::cout<<"d "<<k;
-			out<<at(k);
+			out<<values[k];
 			k++;
 		}
 	}
@@ -139,7 +124,6 @@ inline void Matrix<Elem,dim>::displayHelper(std::ostream& out,size_t i,size_t & 
 	{
 		for(size_t j=0;j<getSizeOfDimension(i);j++)
 		{
-			//std::cout<<"g "<<k;
 			displayHelper(out,i+1,k);
 		}
 	}
@@ -161,13 +145,13 @@ Matrix<Elem,dim>& Matrix<Elem,dim>::operator=(const Matrix& Mat)
 {
 	if (this!=&Mat)
 	{
-		if (dimensions!=Mat.getNbrOfDimensions())
-		{
-			dimensions =Mat.getNbrOfDimensions();
-			delete [] dimSizes;
-			dimSizes=new size_t[dimensions];
-		}
-		for (size_t i=0;i<dimensions;i++)
+//		if (dimensions!=Mat.getNbrOfDimensions())
+//		{
+//			dimensions =Mat.getNbrOfDimensions();
+//			delete [] dimSizes;
+//			dimSizes=new size_t[dim];
+//		}
+		for (size_t i=0;i<dim;i++)
 			dimSizes[i]=Mat.getSizeOfDimension(i);
 		if (nbrOfElements!=Mat.getNbrOfElements())
 		{
@@ -186,13 +170,13 @@ Matrix<Elem,dim>& Matrix<Elem,dim>::operator=(Matrix&& Mat)
 {
 	if (this!=&Mat)
 	{
-		if (dimensions!=Mat.getNbrOfDimensions())
-		{
-			dimensions =Mat.getNbrOfDimensions();
-			delete [] dimSizes;
-			dimSizes=new size_t[dimensions];
-		}
-		for (size_t i=0;i<dimensions;i++)
+//		if (dimensions!=Mat.getNbrOfDimensions())
+//		{
+//			dimensions =Mat.getNbrOfDimensions();
+//			delete [] dimSizes;
+//			dimSizes=new size_t[dim];
+//		}
+		for (size_t i=0;i<dim;i++)
 			dimSizes[i]=Mat.getSizeOfDimension(i);
 		if (nbrOfElements!=Mat.getNbrOfElements())
 		{
@@ -201,7 +185,7 @@ Matrix<Elem,dim>& Matrix<Elem,dim>::operator=(Matrix&& Mat)
 			values=new Elem[nbrOfElements];
 		}
 		for (size_t i=0;i<nbrOfElements;i++)
-			values[i]=Mat.at(i);
+			values[i]=Mat.values[i];
 		delete[] Mat.dimSizes;
 		delete[] Mat.values;
 	}
@@ -217,18 +201,48 @@ template <typename Elem,std::size_t dim>
 std::size_t Matrix<Elem,dim>::calculateIndex(std::ptrdiff_t* operatValues)const
 {
 	std::size_t index=0;
-	for (std::size_t i=0;i<getNbrOfDimensions();i++)
+	for (std::size_t i=0;i<dim;i++)
 		index+=getSizeOfDimension(i)*operatValues[i];
 	return index;
 }
-/*
+
 template <typename Elem,std::size_t dim>
-typename Matrix<Elem,dim>::MatrixAccess
-Matrix<Elem,dim>::operator[](std::ptrdiff_t i)
+OperatHandler<Elem,dim,dim-1> Matrix<Elem,dim>::operator[](std::ptrdiff_t i)
 {
-	return MatrixAccess(*this,i);
+	if (validIndex(0,i))
+	{
+		std::ptrdiff_t* operatValues=new std::ptrdiff_t[dim];
+		operatValues[0]=i;
+		return OperatHandler<Elem,dim,dim-1>(*this,operatValues);
+	}
+	else
+		throw std::out_of_range("Index out of range");
 }
-*/
+
+template <typename Elem,std::size_t dim>
+OperatHandler<Elem,dim,dim-1> Matrix<Elem,dim>::operator[](std::ptrdiff_t i)const
+{
+	if (validIndex(0,i))
+	{
+		std::cout<<"const"<<std::endl;
+		std::ptrdiff_t* operatValues=new std::ptrdiff_t[dim];
+		operatValues[0]=i;
+		return OperatHandler<Elem,dim,dim-1>(*this,operatValues);
+	}
+	else
+		throw std::out_of_range("Index out of range");
+}
+
+template <typename Elem,std::size_t dim>
+std::size_t Matrix<Elem,dim>::getRealIndex(std::size_t dimension,std::ptrdiff_t index)const
+//implémenté pour cette classe pour des raisons de compatibilité avec la classe
+//dérivée avec des indices décalés lors de l'appel à operator[]
+{
+	return index;
+}
+
+
+
 
 //=============================================================================
 //Matrice à 1 dimension
@@ -240,8 +254,8 @@ Matrix<Elem,1>::Matrix(Elem value,std::initializer_list<std::size_t> dims)
 {
 	if (validDimensions(dims)) //vérification des données
 	{
-		dimensions=1;
-		dimSizes= new std::size_t[dimensions];
+		//dimensions=1;
+		dimSizes= new std::size_t[1];
 		dimSizes[0]=*dims.begin();
 		nbrOfElements = dimSizes[0];
 		values = new Elem[nbrOfElements];
@@ -259,24 +273,24 @@ Matrix<Elem,1>::Matrix(Elem value,std::initializer_list<std::size_t> dims)
 template <typename Elem>
 Matrix<Elem,1>::Matrix(const Matrix& Mat)
 {
-	dimensions=1;
-	dimSizes=new size_t[dimensions];
-	dimSizes[0]=Mat.getSizeOfDimension(0);
-	nbrOfElements=Mat.getNbrOfElements();
+	//dimensions=1;
+	dimSizes=new size_t[1];
+	dimSizes[0]=Mat.dimSizes[0];
+	nbrOfElements=Mat.nbrOfElements;
 	values=new Elem[nbrOfElements];
 	for (size_t i=0;i<nbrOfElements;i++)
-		values[i]=Mat.at(i);
+		values[i]=Mat.values[i];
 }
 
 template <typename Elem>
-Matrix<Elem,1>::Matrix(Matrix&& Mat)
+Matrix<Elem,1>::Matrix(Matrix&& Mat): dimSizes(Mat.dimSizes),nbrOfElements(Mat.nbrOfElements),values (Mat.values)
 {
-	dimensions=Mat.dimensions;
-	dimSizes=Mat.dimSizes;
+	//dimensions=Mat.dimensions;
+	//dimSizes=Mat.dimSizes;
 	Mat.dimSizes=nullptr;
-	nbrOfElements=Mat.nbrOfElements;
+	//nbrOfElements=Mat.nbrOfElements;
 	values = Mat.values;
-	Mat.values=nullptr;
+	//Mat.values=nullptr;
 }
 
 template <typename Elem>
@@ -317,7 +331,7 @@ inline size_t Matrix<Elem,1>::getSizeOfDimension(std::size_t i)const
 template <typename Elem>
 inline size_t Matrix<Elem,1>::getNbrOfDimensions()const
 {
-	return dimensions;
+	return 1;
 }
 
 template <typename Elem>
@@ -331,14 +345,14 @@ Matrix<Elem,1>& Matrix<Elem,1>::operator=(const Matrix& Mat)
 {
 	if (this!=&Mat)
 	{
-		if (nbrOfElements!=Mat.getNbrOfElements())
+		if (nbrOfElements!=Mat.nbrOfElements)
 		{
-			nbrOfElements=Mat.getNbrOfElements();
+			nbrOfElements=Mat.nbrOfElements;
 			delete[] values;
 			values=new Elem[nbrOfElements];
 		}
 		for (size_t i=0;i<nbrOfElements;i++)
-			values[i]=Mat.at(i);
+			values[i]=Mat.values[i];
 	}
 	return *this;
 }
@@ -349,14 +363,14 @@ Matrix<Elem,1>& Matrix<Elem,1>::operator=(Matrix&& Mat)
 {
 	if (this!=&Mat)
 	{
-		if (nbrOfElements!=Mat.getNbrOfElements())
+		if (nbrOfElements!=Mat.nbrOfElements)
 		{
-			nbrOfElements=Mat.getNbrOfElements();
+			nbrOfElements=Mat.nbrOfElements;
 			delete[] values;
 			values=new Elem[nbrOfElements];
 		}
 		for (size_t i=0;i<nbrOfElements;i++)
-			values[i]=Mat.at(i);
+			values[i]=Mat.values[i];
 		delete[] Mat.dimSizes;
 		delete[] Mat.values;
 	}
@@ -378,22 +392,10 @@ bool Matrix<Elem,1>::validIndex(std::ptrdiff_t index)const
 // }
 
 template <typename Elem>
-inline const Elem Matrix<Elem,1>::at(std::size_t i)const
-{
-	return values[i];
-}
-
-template <typename Elem>
-inline Elem& Matrix<Elem,1>::at(std::size_t i)
-{
-	return values[i];
-}
-
-template <typename Elem>
 const Elem Matrix<Elem,1>::operator[](std::ptrdiff_t i)const
 {
 	if (validIndex(i))
-		return at(i);
+		return values[i];
 	else
 		throw std::out_of_range("Index out of range");
 }
@@ -402,7 +404,7 @@ template <typename Elem>
 Elem& Matrix<Elem,1>::operator[](std::ptrdiff_t i)
 {
 	if (validIndex(i))
-		return at(i);
+		return values[i];
 	else
 		throw std::out_of_range("Index out of range");
 }
@@ -412,7 +414,7 @@ std::ostream& operator<< (std::ostream& out, const Matrix<T,1>& M)
 {
 	out<<"[ ";
 	for (size_t i=0;i<M.getSizeOfDimension(0);i++)
-		out<<M.at(i);
+		out<<M.values[i];
 	out<<" ]";
 	return out;
 }
