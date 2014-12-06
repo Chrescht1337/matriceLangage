@@ -17,15 +17,15 @@ class Matrix
         template <typename T,std::size_t t>
         friend std::ostream& operator<< (std::ostream&, const Matrix<T,t>&);
         inline void displayHelper(std::ostream& out, size_t i,size_t & t)const;
-        bool validDimensions(std::initializer_list<std::size_t> dims)const;
-        bool validIndex(std::size_t dimension,std::ptrdiff_t index)const;
-        std::size_t getRealIndex(std::size_t dimension,std::ptrdiff_t index)const;
-        std::size_t calculateIndex(std::shared_ptr<std::ptrdiff_t> operatValues)const;
-        //const Elem& at(std::size_t t)const{return values[t];}
         template <typename S,std::size_t s,std::size_t j>
         friend class OperatHandler;
         template <typename F,std::size_t f,std::size_t h>
         friend class constOperatHandler;
+
+        bool validDimensions(std::initializer_list<std::size_t> dims)const;
+        virtual bool validIndex(std::size_t dimension,std::ptrdiff_t index)const;
+        virtual std::size_t getRealIndex(std::size_t dimension,std::ptrdiff_t index)const;
+        std::size_t calculateIndex(std::shared_ptr<std::ptrdiff_t> operatValues)const;
     public:
         Matrix(Elem value,std::initializer_list<std::size_t> dims);
         Matrix(const Matrix& Mat);

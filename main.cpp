@@ -1,6 +1,7 @@
 #include "Matrix.cpp"
 #include "OperatHandler.cpp"
 #include "constOperatHandler.cpp"
+#include "ShiftedIndexMatrix.cpp"
 #include <iostream>
 #include <stdexcept>
 #include <cstddef>
@@ -44,6 +45,10 @@ int main()
 	std::cout<<t<<std::endl;
 	const Matrix<int,5> konst(66,{3,3,3,3,3});
 	std::cout<<konst[2][2][2][2][2]<<"\n";
+	std::cout<<"==================================================="<<std::endl;
+	std::cout<<"index décalés : \n";
+	ShiftedIndexMatrix<int,3> indi(44,{1,2,3},{-4,7,10});
+	ShiftedIndexMatrix<int,3> tre(indi);
 	return 0;
 
 }
