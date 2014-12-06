@@ -1,7 +1,10 @@
 #include "Matrix.cpp"
 #include "OperatHandler.cpp"
+#include "constOperatHandler.cpp"
 #include <iostream>
 #include <stdexcept>
+#include <cstddef>
+#include <memory>
 
 int main()
 {
@@ -39,7 +42,8 @@ int main()
 	k[0][0][0][0]=t[0][0][0][0][0];
 	std::cout<<t[0][0][0][0][0]<<std::endl;
 	std::cout<<t<<std::endl;
-
+	const Matrix<int,5> konst(66,{3,3,3,3,3});
+	std::cout<<konst[2][2][2][2][2]<<"\n";
 	return 0;
 
 }

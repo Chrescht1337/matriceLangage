@@ -2,7 +2,9 @@
 #define _MATRIX_H_
 #include <cstddef>
 #include <iostream>
+#include <memory>
 #include "OperatHandler.hpp"
+#include "constOperatHandler.hpp"
 
 template <typename Elem,std::size_t dim>
 class Matrix
@@ -18,10 +20,12 @@ class Matrix
         bool validDimensions(std::initializer_list<std::size_t> dims)const;
         bool validIndex(std::size_t dimension,std::ptrdiff_t index)const;
         std::size_t getRealIndex(std::size_t dimension,std::ptrdiff_t index)const;
-        std::size_t calculateIndex(std::ptrdiff_t* )const;
+        std::size_t calculateIndex(std::shared_ptr<std::ptrdiff_t> operatValues)const;
         //const Elem& at(std::size_t t)const{return values[t];}
         template <typename S,std::size_t s,std::size_t j>
         friend class OperatHandler;
+        template <typename F,std::size_t f,std::size_t h>
+        friend class constOperatHandler;
     public:
         Matrix(Elem value,std::initializer_list<std::size_t> dims);
         Matrix(const Matrix& Mat);
@@ -33,7 +37,7 @@ class Matrix
         Matrix& operator=(const Matrix& Mat);
         Matrix& operator=(Matrix&& Mat);
         OperatHandler<Elem,dim,dim-1> operator[](std::ptrdiff_t i);
-        OperatHandler<Elem,dim,dim-1> operator[](std::ptrdiff_t i)const;
+        constOperatHandler<Elem,dim,dim-1> operator[](std::ptrdiff_t i)const;
 };
 template<typename Elem>
 class Matrix<Elem,1>

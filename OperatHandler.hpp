@@ -2,7 +2,7 @@
 #define _OperatHandler_H_
 #include <cstddef>
 #include <iostream>
-//#include "Matrix.hpp" forward declaration so no include
+#include <memory>
 
 template<typename T,std::size_t t>
 class Matrix;
@@ -12,26 +12,22 @@ class OperatHandler
 {
     private:
         Matrix<Elem,dim>& M;
-        std::ptrdiff_t* operatValues_;
+        std::shared_ptr<std::ptrdiff_t> operatValues_;
 
     public:
-        OperatHandler(Matrix<Elem,dim>& Mat,std::ptrdiff_t* operatValues);
+        OperatHandler(Matrix<Elem,dim>& Mat,std::shared_ptr<std::ptrdiff_t>& operatValues);
         OperatHandler<Elem,dim,callsLeft-1> operator[](std::ptrdiff_t i);
-        ~OperatHandler();
-
 };
 template<typename Elem,std::size_t dim>
 class OperatHandler<Elem,dim,1>
 {
     private:
         Matrix<Elem,dim>& M;
-        std::ptrdiff_t* operatValues_;
+        std::shared_ptr<std::ptrdiff_t> operatValues_;
 
     public:
-        OperatHandler(Matrix<Elem,dim>& Mat,std::ptrdiff_t* operatValues);
+        OperatHandler(Matrix<Elem,dim>& Mat,std::shared_ptr<std::ptrdiff_t> operatValues);
         Elem& operator[](std::ptrdiff_t i);
-        const Elem& operator[](std::ptrdiff_t i)const;
-        ~OperatHandler();
 };
 
 

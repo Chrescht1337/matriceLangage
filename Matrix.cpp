@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cstddef>
 #include <stdexcept>
+#include <memory>
 
 template <typename Elem,std::size_t dim>
 Matrix<Elem,dim>::Matrix(Elem value,std::initializer_list<std::size_t> dims)
@@ -198,11 +199,11 @@ bool Matrix<Elem,dim>::validIndex(std::size_t dimension,std::ptrdiff_t index)con
 }
 
 template <typename Elem,std::size_t dim>
-std::size_t Matrix<Elem,dim>::calculateIndex(std::ptrdiff_t* operatValues)const
+std::size_t Matrix<Elem,dim>::calculateIndex(std::shared_ptr<std::ptrdiff_t> operatValues)const
 {
 	std::size_t index=0;
 	for (std::size_t i=0;i<dim;i++)
-		index+=getSizeOfDimension(i)*operatValues[i];
+		index+=getSizeOfDimension(i)*operatValues.get()[i];
 	return index;
 }
 
@@ -211,8 +212,8 @@ OperatHandler<Elem,dim,dim-1> Matrix<Elem,dim>::operator[](std::ptrdiff_t i)
 {
 	if (validIndex(0,i))
 	{
-		std::ptrdiff_t* operatValues=new std::ptrdiff_t[dim];
-		operatValues[0]=i;
+		std::shared_ptr<std::ptrdiff_t> operatValues( new std::ptrdiff_t[dim]);
+		operatValues.get()[0]=i;
 		return OperatHandler<Elem,dim,dim-1>(*this,operatValues);
 	}
 	else
@@ -220,14 +221,13 @@ OperatHandler<Elem,dim,dim-1> Matrix<Elem,dim>::operator[](std::ptrdiff_t i)
 }
 
 template <typename Elem,std::size_t dim>
-OperatHandler<Elem,dim,dim-1> Matrix<Elem,dim>::operator[](std::ptrdiff_t i)const
+constOperatHandler<Elem,dim,dim-1> Matrix<Elem,dim>::operator[](std::ptrdiff_t i)const
 {
 	if (validIndex(0,i))
 	{
-		std::cout<<"const"<<std::endl;
-		std::ptrdiff_t* operatValues=new std::ptrdiff_t[dim];
-		operatValues[0]=i;
-		return OperatHandler<Elem,dim,dim-1>(*this,operatValues);
+		std::shared_ptr<std::ptrdiff_t> operatValues( new std::ptrdiff_t[dim]);
+		operatValues.get()[0]=i;
+		return constOperatHandler<Elem,dim,dim-1>(*this,operatValues);
 	}
 	else
 		throw std::out_of_range("Index out of range");
