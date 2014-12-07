@@ -45,37 +45,24 @@ class Matrix<Elem,1>
 private:
         Elem * values;
         std::size_t nbrOfElements;
-        std::size_t* dimSizes;
-        //std::size_t dimensions;
+        std::size_t dimSize;
 
         template <typename T>
         friend std::ostream& operator<< (std::ostream&, const Matrix<T,1>&);
-        bool validDimensions(std::initializer_list<std::size_t> dims)const;
-        bool validIndex(std::ptrdiff_t index)const;
-        //std::size_t calculateIndex(std::ptrdiff_t* operatValues)const;
-
+        virtual bool validIndex(std::ptrdiff_t index)const;
+        virtual std::size_t getRealIndex(std::ptrdiff_t index)const;
     public:
-        Matrix(Elem value,std::initializer_list<std::size_t> dims);
+        Matrix(Elem value,std::size_t dims);
         Matrix(const Matrix& Mat);
         Matrix(Matrix&& Mat);
         ~Matrix();
-        inline size_t getSizeOfDimension(std::size_t i)const;
+        inline size_t getSizeOfDimension()const;
         inline size_t getNbrOfDimensions() const;
         inline size_t getNbrOfElements() const;
         Matrix& operator=(const Matrix& Mat);
         Matrix& operator=(Matrix&& Mat);
         Elem& operator[](std::ptrdiff_t i);
         const Elem operator[](std::ptrdiff_t i)const;
-
 };
-/*
-template <typename Elem,std::size_t dim,int t>
-class Matrix<Elem,dim>::ok<t>
-{
-private:
-    int i;
-public:
-    ok(int a){i=t;std::cout<<"ok "<<i<<" "<<a;};
 
-};*/
 #endif

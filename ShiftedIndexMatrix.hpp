@@ -17,8 +17,21 @@ class ShiftedIndexMatrix : public Matrix<Elem,dim>
         ShiftedIndexMatrix(ShiftedIndexMatrix&& Mat);
         ~ShiftedIndexMatrix();
         ShiftedIndexMatrix& operator=(const ShiftedIndexMatrix&);
-        ShiftedIndexMatrix& operator=(ShiftedIndexMatrix&&); 
-
+        ShiftedIndexMatrix& operator=(ShiftedIndexMatrix&&);
 };
-
+template <typename Elem>
+class ShiftedIndexMatrix<Elem,1> : public Matrix<Elem,1>
+{
+    private:
+        std::ptrdiff_t indexShift;
+        bool validIndex(std::ptrdiff_t index)const override;
+        std::size_t getRealIndex(std::ptrdiff_t index)const override;
+    public:
+        ShiftedIndexMatrix(Elem,std::size_t,std::ptrdiff_t);
+        ShiftedIndexMatrix(const ShiftedIndexMatrix& Mat);
+        ShiftedIndexMatrix(ShiftedIndexMatrix&& Mat);
+        //~ShiftedIndexMatrix();
+        ShiftedIndexMatrix& operator=(const ShiftedIndexMatrix&);
+        ShiftedIndexMatrix& operator=(ShiftedIndexMatrix&&);
+};
 #endif

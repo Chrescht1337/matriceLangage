@@ -39,7 +39,7 @@ int main()
 	std::cout<<eent[2]<<std::endl;
 	std::cout<<eent<<std::endl;
 	std::cout<<"==================================================="<<std::endl;
-	t[0][0][0][0][0]=9;
+	t[1][1][1][1][1]=9;
 	k[0][0][0][0]=t[0][0][0][0][0];
 	std::cout<<t[0][0][0][0][0]<<std::endl;
 	std::cout<<t<<std::endl;
@@ -48,7 +48,23 @@ int main()
 	std::cout<<"==================================================="<<std::endl;
 	std::cout<<"index décalés : \n";
 	ShiftedIndexMatrix<int,3> indi(44,{1,2,3},{-4,7,10});
-	ShiftedIndexMatrix<int,3> tre(indi);
+	ShiftedIndexMatrix<int,4> tre(11,{2,2,2,2},{-2,-2,-2,-2});
+	//tre=indi;
+	std::cout<<tre<<"\n";
+	//tre=ShiftedIndexMatrix<int,3>(11,{2,2,2},{-1,0,0});
+	tre[-1][-2][-1][-1]=2;
+	std::cout<<tre<<"\n";
+
+	ShiftedIndexMatrix<int,2> okk(0,{2,2},{10,10});
+	okk[10][11]=1;
+	okk[11][10]=2;
+	okk[11][11]=3;
+	std::cout<<okk<<"\n";
+
+	ShiftedIndexMatrix<int,1> e1(1,4,-2);
+	e1[1]=6;
+	std::cout<<e1<<"\n";
+	std::cout<<e1[1]<<"\n";
 	return 0;
 
 }

@@ -34,16 +34,14 @@ Matrix<Elem,dim>::Matrix(Elem value,std::initializer_list<std::size_t> dims)
 }
 
 template <typename Elem,std::size_t dim>
-Matrix<Elem,dim>::Matrix(const Matrix& Mat) : dimSizes(Mat.dimSizes), nbrOfElements(Mat.nbrOfElements),values(Mat.values)
+Matrix<Elem,dim>::Matrix(const Matrix& Mat) : nbrOfElements(Mat.nbrOfElements)
 {
-	/*
 	dimSizes=new size_t[dim];
 	for (size_t i=0;i<dim;i++)
 		dimSizes[i]=Mat.dimSizes[i];
-	nbrOfElements=Mat.nbrOfElements;
 	values=new Elem[nbrOfElements];
 	for (size_t i=0;i<nbrOfElements;i++)
-		values[i]=Mat.values[i];*/
+		values[i]=Mat.values[i];
 }
 
 template <typename Elem,std::size_t dim>
@@ -114,15 +112,17 @@ inline void Matrix<Elem,dim>::displayHelper(std::ostream& out,size_t i,size_t & 
 	out<<"[ ";
 	if (i==dim-1)
 	{
-		for (size_t j=0;j<this->getSizeOfDimension(i);j++)
+		for (size_t j=0;j<this->dimSizes[i];j++)
 		{
 			out<<values[k];
 			k++;
+			if (j<this->dimSizes[i]-1)
+				out<<",";
 		}
 	}
 	else
 	{
-		for(size_t j=0;j<this->getSizeOfDimension(i);j++)
+		for(size_t j=0;j<this->dimSizes[i];j++)
 		{
 			this->displayHelper(out,i+1,k);
 		}
@@ -185,8 +185,9 @@ template <typename Elem,std::size_t dim>
 std::size_t Matrix<Elem,dim>::calculateIndex(std::shared_ptr<std::ptrdiff_t> operatValues)const
 {
 	std::size_t index=0;
-	for (std::size_t i=0;i<dim;i++)
+	for (std::size_t i=0;i<dim-1;i++)
 		index+=this->getSizeOfDimension(i)*operatValues.get()[i];
+	index+=operatValues.get()[dim-1];
 	return index;
 }
 
@@ -196,7 +197,7 @@ OperatHandler<Elem,dim,dim-1> Matrix<Elem,dim>::operator[](std::ptrdiff_t i)
 	if (this->validIndex(0,i))
 	{
 		std::shared_ptr<std::ptrdiff_t> operatValues( new std::ptrdiff_t[dim]);
-		operatValues.get()[0]=i;
+		operatValues.get()[0]=this->getRealIndex(0,i);
 		return OperatHandler<Elem,dim,dim-1>(*this,operatValues);
 	}
 	else
@@ -209,7 +210,7 @@ constOperatHandler<Elem,dim,dim-1> Matrix<Elem,dim>::operator[](std::ptrdiff_t i
 	if (validIndex(0,i))
 	{
 		std::shared_ptr<std::ptrdiff_t> operatValues( new std::ptrdiff_t[dim]);
-		operatValues.get()[0]=i;
+		operatValues.get()[0]=this->getRealIndex(0,i);
 		return constOperatHandler<Elem,dim,dim-1>(*this,operatValues);
 	}
 	else
@@ -233,14 +234,12 @@ std::size_t Matrix<Elem,dim>::getRealIndex(std::size_t dimension,std::ptrdiff_t 
 
 
 template <typename Elem>
-Matrix<Elem,1>::Matrix(Elem value,std::initializer_list<std::size_t> dims)
+Matrix<Elem,1>::Matrix(Elem value,std::size_t dims=1)
 {
-	if (this->validDimensions(dims)) //vérification des données
+	if (dims!=0)
 	{
-		//dimensions=1;
-		dimSizes= new std::size_t[1];
-		dimSizes[0]=*dims.begin();
-		nbrOfElements = dimSizes[0];
+		dimSize=dims;
+		nbrOfElements = dimSize;
 		values = new Elem[nbrOfElements];
 		for (std::size_t i = 0; i < nbrOfElements; i++)
 		//on remplit la matrice avec la valeur initiale fournie
@@ -249,29 +248,23 @@ Matrix<Elem,1>::Matrix(Elem value,std::initializer_list<std::size_t> dims)
 		}
 	}
 	else
-		throw std::range_error("Number of dimension passed not compatible with your dimension-list");
-
+		throw std::range_error("Invalid dimension: size = 0 ");
 }
 
 template <typename Elem>
-Matrix<Elem,1>::Matrix(const Matrix& Mat) :dimSizes(Mat.dimSizes), nbrOfElements(Mat.nbrOfElements),values(Mat.values)
+Matrix<Elem,1>::Matrix(const Matrix& Mat) : nbrOfElements(Mat.nbrOfElements)
 {
-	//dimensions=1;
-	/*
-	dimSizes=new size_t[1];
-	dimSizes[0]=Mat.dimSizes[0];
-	nbrOfElements=Mat.nbrOfElements;
+	dimSize=Mat.dimSize;
 	values=new Elem[nbrOfElements];
 	for (size_t i=0;i<nbrOfElements;i++)
-		values[i]=Mat.values[i]; */
+		values[i]=Mat.values[i];
 }
 
 template <typename Elem>
-Matrix<Elem,1>::Matrix(Matrix&& Mat): dimSizes(Mat.dimSizes),nbrOfElements(Mat.nbrOfElements),values (Mat.values)
+Matrix<Elem,1>::Matrix(Matrix&& Mat): dimSize(Mat.dimSize),nbrOfElements(Mat.nbrOfElements),values (Mat.values)
 {
 	//dimensions=Mat.dimensions;
 	//dimSizes=Mat.dimSizes;
-	Mat.dimSizes=nullptr;
 	//nbrOfElements=Mat.nbrOfElements;
 	values = Mat.values;
 	//Mat.values=nullptr;
@@ -280,36 +273,13 @@ Matrix<Elem,1>::Matrix(Matrix&& Mat): dimSizes(Mat.dimSizes),nbrOfElements(Mat.n
 template <typename Elem>
 Matrix<Elem,1>::~Matrix()
 {
-	delete[] dimSizes;
 	delete[] values;
 }
 
 template <typename Elem>
-bool Matrix<Elem,1>::validDimensions(std::initializer_list<std::size_t> dims) const
+inline size_t Matrix<Elem,1>::getSizeOfDimension()const
 {
-	if (dims.size() == 1 )
-	// dims ne peut avoir qu'une seule composante
-	{
-		if (dims.begin()<=0)	//une dimension doit être stricement positive
-			throw std::range_error("Invalid dimension: size <= 0 ");
-		else //cas si liste est vide
-			return true;
-	}
-	else if (dims.size()==0) //cas si liste est vide
-		throw std::length_error("No dimension specified");
-	else
-		return false;
-}
-
-template <typename Elem>
-inline size_t Matrix<Elem,1>::getSizeOfDimension(std::size_t i)const
-{
-	if (i==0)
-	{
-		return dimSizes[i];
-	}
-	else
-		throw std::out_of_range("Index out of range");
+	return dimSize;
 }
 
 template <typename Elem>
@@ -355,7 +325,6 @@ Matrix<Elem,1>& Matrix<Elem,1>::operator=(Matrix&& Mat)
 		}
 		for (size_t i=0;i<nbrOfElements;i++)
 			values[i]=Mat.values[i];
-		delete[] Mat.dimSizes;
 		delete[] Mat.values;
 	}
 }
@@ -363,14 +332,23 @@ Matrix<Elem,1>& Matrix<Elem,1>::operator=(Matrix&& Mat)
 template <typename Elem>
 bool Matrix<Elem,1>::validIndex(std::ptrdiff_t index)const
 {
-	return (0<=index && index<this->getSizeOfDimension(0));
+	return (0<=index && index<dimSize);
+}
+
+template <typename Elem>
+std::size_t Matrix<Elem,1>::getRealIndex(std::ptrdiff_t index)const
+{
+	return index;
 }
 
 template <typename Elem>
 const Elem Matrix<Elem,1>::operator[](std::ptrdiff_t i)const
 {
 	if (this->validIndex(i))
+	{
+		i=this->getRealIndex(i);
 		return values[i];
+	}
 	else
 		throw std::out_of_range("Index out of range");
 }
@@ -379,7 +357,10 @@ template <typename Elem>
 Elem& Matrix<Elem,1>::operator[](std::ptrdiff_t i)
 {
 	if (this->validIndex(i))
+	{
+		i=this->getRealIndex(i);
 		return values[i];
+	}
 	else
 		throw std::out_of_range("Index out of range");
 }
@@ -388,7 +369,7 @@ template <typename T>
 std::ostream& operator<< (std::ostream& out, const Matrix<T,1>& M)
 {
 	out<<"[ ";
-	for (size_t i=0;i<M.getSizeOfDimension(0);i++)
+	for (size_t i=0;i<M.dimSize;i++)
 		out<<M.values[i];
 	out<<" ]";
 	return out;
