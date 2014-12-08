@@ -2,24 +2,24 @@
 #include "OperatHandler.cpp"
 #include "constOperatHandler.cpp"
 #include "ShiftedIndexMatrix.cpp"
+#include "sliceMatrix.cpp"
 #include <iostream>
 #include <stdexcept>
 #include <cstddef>
 #include <memory>
+#include <utility>
 
 int main()
 {
 	std::cout<<"Tests :"<<std::endl;
 	std::cout<<"==================================================="<<std::endl;
-	std::cout<<"Matrix<int,4> p(1,{1,2,3,4})"<<std::endl;
+	std::cout<<"Construction d'une matrice à 4 composantes: ";
 	Matrix<int,4> p(1,{1,2,3,4});
-	std::cout<<p.getSizeOfDimension(2)<<std::endl;
-	std::cout<<p.getNbrOfDimensions()<<std::endl;
+	std::cout<<"réussie\n";
 	std::cout<<"==================================================="<<std::endl;
 	std::cout<<"Matrix<int,4> k=Matrix<int,4>(3,{9,9,9,9})"<<std::endl;
 	Matrix<int,4> k=Matrix<int,4>(3,{9,9,9,9});
 	std::cout<<"k.getSizeOfDimension(1) : "<<k.getSizeOfDimension(1)<<std::endl;
-	std::cout<<k.getSizeOfDimension(3)<<std::endl;
 	std::cout<<"==================================================="<<std::endl;
 	Matrix<int,5> t=Matrix<int,5>(0,{2,2,2,2,2});
 	//k=t;
@@ -47,7 +47,7 @@ int main()
 	std::cout<<konst[2][2][2][2][2]<<"\n";
 	std::cout<<"==================================================="<<std::endl;
 	std::cout<<"index décalés : \n";
-	ShiftedIndexMatrix<int,3> indi(44,{1,2,3},{-4,7,10});
+	ShiftedIndexMatrix<int,3> indi(44,{4,4,4},{0,0,0});
 	ShiftedIndexMatrix<int,4> tre(11,{2,2,2,2},{-2,-2,-2,-2});
 	//tre=indi;
 	std::cout<<tre<<"\n";
@@ -65,6 +65,13 @@ int main()
 	e1[1]=6;
 	std::cout<<e1<<"\n";
 	std::cout<<e1[1]<<"\n";
+	std::cout<<"==================================================="<<std::endl;
+	std::cout<<"slices : \n";
+	sliceMatrix<int,3> slic(indi,{{2,3},{2,3},{2,3}},{1,1,1});
+	std::pair<std::size_t,std::size_t> p1({2,2});
+
+	std::initializer_list<std::pair<std::size_t,std::size_t>> ilp({{2,2},{2,2},{2,2}});
+	//sliceMatrix<int,3,3> slic2(4,{3,3,3},{0,0,0});
 	return 0;
 
 }

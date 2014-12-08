@@ -52,6 +52,7 @@ Matrix<Elem,dim>::Matrix(Matrix&& Mat) : dimSizes(Mat.dimSizes),nbrOfElements(Ma
 //	nbrOfElements=Mat.nbrOfElements;
 //	values = Mat.values;
 	Mat.values=nullptr;
+	std::cout<<" construct &&\n";
 }
 
 template <typename Elem,std::size_t dim>
@@ -67,15 +68,15 @@ bool Matrix<Elem,dim>::validDimensions(std::initializer_list<std::size_t> dims) 
 	if (dim == dims.size())
 	// si dim est de même longueur que la liste spécifiant les composantes
 	{
-		if (dims.size()!=0)// liste non vide
+		if (dim!=0)// dim doit être strictement positif
 		{
 			for (auto size: dims)
 			{
-				if (size<=0)	//une dimension doit être stricement positive
+				if (size==0)	//une dimension doit être stricement positive
 					throw std::range_error("Invalid dimension: size <= 0 ");
 			}
 		}
-		else //cas si liste est vide
+		else //cas dim=0
 			throw std::length_error("No dimensions specified");
 		return true;
 	}
@@ -172,6 +173,7 @@ Matrix<Elem,dim>& Matrix<Elem,dim>::operator=(Matrix&& Mat)
 		Mat.dimSizes=nullptr;
 		Mat.values=nullptr;
 	}
+	std::cout<<" operator= &&\n";
 	return *this;
 }
 

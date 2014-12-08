@@ -5,22 +5,25 @@
 #include <memory>
 #include "OperatHandler.hpp"
 #include "constOperatHandler.hpp"
+#include "sliceMatrix.hpp"
 
 template <typename Elem,std::size_t dim>
 class Matrix
 {
-    private:
-        Elem * values;
-        std::size_t nbrOfElements;
-        std::size_t* dimSizes;
-
         template <typename T,std::size_t t>
         friend std::ostream& operator<< (std::ostream&, const Matrix<T,t>&);
-        inline void displayHelper(std::ostream& out, size_t i,size_t & t)const;
         template <typename S,std::size_t s,std::size_t j>
         friend class OperatHandler;
         template <typename F,std::size_t f,std::size_t h>
         friend class constOperatHandler;
+        template <typename D,std::size_t d>
+        friend class sliceMatrix;
+
+    private:
+        inline void displayHelper(std::ostream& out, size_t i,size_t & t)const;
+        Elem * values;
+        std::size_t nbrOfElements;
+        std::size_t* dimSizes;
 
         bool validDimensions(std::initializer_list<std::size_t> dims)const;
         virtual bool validIndex(std::size_t dimension,std::ptrdiff_t index)const;
