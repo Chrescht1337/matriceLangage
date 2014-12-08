@@ -33,6 +33,7 @@ class Matrix
         Matrix(Elem value,std::initializer_list<std::size_t> dims);
         Matrix(const Matrix& Mat);
         Matrix(Matrix&& Mat);
+        Matrix();
         ~Matrix();
         inline size_t getSizeOfDimension(std::size_t i)const;
         inline size_t getNbrOfDimensions() const;
@@ -45,13 +46,15 @@ class Matrix
 template<typename Elem>
 class Matrix<Elem,1>
 {
+        template <typename T>
+        friend std::ostream& operator<< (std::ostream&, const Matrix<T,1>&);
+        template <typename Z,std::size_t z>
+        friend class sliceMatrix;
 private:
         Elem * values;
         std::size_t nbrOfElements;
         std::size_t dimSize;
 
-        template <typename T>
-        friend std::ostream& operator<< (std::ostream&, const Matrix<T,1>&);
         virtual bool validIndex(std::ptrdiff_t index)const;
         virtual std::size_t getRealIndex(std::ptrdiff_t index)const;
     public:

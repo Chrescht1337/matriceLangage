@@ -47,13 +47,12 @@ int main()
 	std::cout<<konst[2][2][2][2][2]<<"\n";
 	std::cout<<"==================================================="<<std::endl;
 	std::cout<<"index décalés : \n";
-	ShiftedIndexMatrix<int,3> indi(44,{4,4,4},{0,0,0});
-	ShiftedIndexMatrix<int,4> tre(11,{2,2,2,2},{-2,-2,-2,-2});
+	ShiftedIndexMatrix<int,3> indi(4,{3,3,3},{-3,-3,-3});
+	ShiftedIndexMatrix<int,3> tre(11,{2,2,2},{-2,-2,-2});
 	//tre=indi;
 	std::cout<<tre<<"\n";
 	//tre=ShiftedIndexMatrix<int,3>(11,{2,2,2},{-1,0,0});
-	tre[-1][-2][-1][-1]=2;
-	std::cout<<tre<<"\n";
+	//tre[-1][-2][-1][-1]=2;
 
 	ShiftedIndexMatrix<int,2> okk(0,{2,2},{10,10});
 	okk[10][11]=1;
@@ -67,11 +66,25 @@ int main()
 	std::cout<<e1[1]<<"\n";
 	std::cout<<"==================================================="<<std::endl;
 	std::cout<<"slices : \n";
-	sliceMatrix<int,3> slic(indi,{{2,3},{2,3},{2,3}},{1,1,1});
-	std::pair<std::size_t,std::size_t> p1({2,2});
-
-	std::initializer_list<std::pair<std::size_t,std::size_t>> ilp({{2,2},{2,2},{2,2}});
+	sliceMatrix<int,3> slic(indi,{{-3,-1},{-3,-1},{-3,-1}},{1,1,1});
+//	std::pair<std::size_t,std::size_t> p1({2,2});
+	tre=slic;
+	std::cout<<indi<<"\n";
+	std::cout<<tre<<"\n";
+	for (int i=-3;i<0;i++){
+		for (int j=-3;j<0;j++){
+			for (int k=-3;k<0;k++){
+				tre[i][j][k]=-1;
+				//std::cout<<tre<<"\n";
+				}
+			}
+		}
+	//std::initializer_list<std::pair<std::size_t,std::size_t>> ilp({{2,2},{2,2},{2,2}});
 	//sliceMatrix<int,3,3> slic2(4,{3,3,3},{0,0,0});
+	ShiftedIndexMatrix<int,3> utz(slic);
+	std::cout<<utz<<"\n";
+	sliceMatrix<int,1> slic1(e1,{-1,1});
+	ShiftedIndexMatrix<int,3> itz(sliceMatrix<int,3>(indi,{{-3,-1},{-3,-1},{-3,-1}},{1,1,1}));
 	return 0;
 
 }

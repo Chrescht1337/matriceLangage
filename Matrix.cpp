@@ -5,6 +5,14 @@
 #include <memory>
 
 template <typename Elem,std::size_t dim>
+Matrix<Elem,dim>::Matrix()
+{
+	values=new Elem[dim];
+	nbrOfElements=0;
+	dimSizes=new std::size_t[dim];
+}
+
+template <typename Elem,std::size_t dim>
 Matrix<Elem,dim>::Matrix(Elem value,std::initializer_list<std::size_t> dims)
 {
 	if (this->validDimensions(dims)) //vérification des données
@@ -188,7 +196,7 @@ std::size_t Matrix<Elem,dim>::calculateIndex(std::shared_ptr<std::ptrdiff_t> ope
 {
 	std::size_t index=0;
 	for (std::size_t i=0;i<dim-1;i++)
-		index+=this->getSizeOfDimension(i)*operatValues.get()[i];
+		index=(index +operatValues.get()[i])*this->getSizeOfDimension(i);
 	index+=operatValues.get()[dim-1];
 	return index;
 }
@@ -263,7 +271,7 @@ Matrix<Elem,1>::Matrix(const Matrix& Mat) : nbrOfElements(Mat.nbrOfElements)
 }
 
 template <typename Elem>
-Matrix<Elem,1>::Matrix(Matrix&& Mat): dimSize(Mat.dimSize),nbrOfElements(Mat.nbrOfElements),values (Mat.values)
+Matrix<Elem,1>::Matrix(Matrix&& Mat): dimSize(Mat.dimSize),nbrOfElements(Mat.nbrOfElements),values(Mat.values)
 {
 	//dimensions=Mat.dimensions;
 	//dimSizes=Mat.dimSizes;

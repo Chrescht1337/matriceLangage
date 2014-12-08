@@ -34,6 +34,42 @@ ShiftedIndexMatrix<Elem,dim>::ShiftedIndexMatrix(ShiftedIndexMatrix&& Mat) : Mat
 }
 
 template <typename Elem,std::size_t dim>
+ShiftedIndexMatrix<Elem,dim>::ShiftedIndexMatrix(const Matrix<Elem,dim>& Mat) : Matrix<Elem,dim>(Mat)
+{
+    indexShift= new std::ptrdiff_t[this->getNbrOfElements()];
+    for (std::size_t i=0;i<this->getNbrOfElements();i++)
+        indexShift[i]=0;
+}
+
+template <typename Elem,std::size_t dim>
+ShiftedIndexMatrix<Elem,dim>::ShiftedIndexMatrix(Matrix<Elem,dim>&& Mat) : Matrix<Elem,dim>(Mat)
+{
+    indexShift= new std::ptrdiff_t[this->getNbrOfElements()];
+    for (std::size_t i=0;i<this->getNbrOfElements();i++)
+        indexShift[i]=0;
+}
+
+template <typename Elem,std::size_t dim>
+ShiftedIndexMatrix<Elem,dim>::ShiftedIndexMatrix(const sliceMatrix<Elem,dim>& sliceMat) //: ShiftedIndexMatrix(sliceMat.Mat)
+{
+    if (sliceMat.validSliceToShiftedIndexMatrix())
+    {
+        indexShift=new std::ptrdiff_t[dim];
+        this->operator=(sliceMat.Mat);
+    }
+}
+
+template <typename Elem,std::size_t dim>
+ShiftedIndexMatrix<Elem,dim>::ShiftedIndexMatrix(sliceMatrix<Elem,dim>&& sliceMat) //: ShiftedIndexMatrix(sliceMat.Mat)
+{
+    if (sliceMat.validSliceToShiftedIndexMatrix())
+    {
+        indexShift=new std::ptrdiff_t[dim];
+        this->operator=(sliceMat.Mat);
+    }
+}
+
+template <typename Elem,std::size_t dim>
 ShiftedIndexMatrix<Elem,dim>::~ShiftedIndexMatrix()
 {
     delete[] indexShift;
@@ -83,6 +119,25 @@ ShiftedIndexMatrix<Elem,dim>& ShiftedIndexMatrix<Elem,dim>::operator=(ShiftedInd
     return *this;
 }
 
+
+template <typename Elem,std::size_t dim>
+ShiftedIndexMatrix<Elem,dim>& ShiftedIndexMatrix<Elem,dim>::operator=(const sliceMatrix<Elem,dim>& sliceMat)
+{
+    if (sliceMat.validSliceToShiftedIndexMatrix())
+    {
+        this->operator=(sliceMat.Mat);
+    }
+    return *this;
+}
+
+template <typename Elem,std::size_t dim>
+ShiftedIndexMatrix<Elem,dim>& ShiftedIndexMatrix<Elem,dim>::operator=(sliceMatrix<Elem,dim>&& sliceMat)
+{
+    if (sliceMat.validSliceToShiftedIndexMatrix())
+        this->operator=(sliceMat.Mat);
+    return *this;
+}
+
 //=============================================================================
 //Matrice à 1 dimension
 //=============================================================================
@@ -100,6 +155,28 @@ ShiftedIndexMatrix<Elem,1>::ShiftedIndexMatrix(const ShiftedIndexMatrix& Mat) : 
 
 template<typename Elem>
 ShiftedIndexMatrix<Elem,1>::ShiftedIndexMatrix(ShiftedIndexMatrix&& Mat) : Matrix<Elem,1>(Mat),indexShift(Mat.indexShift)
+{
+}
+
+template<typename Elem>
+ShiftedIndexMatrix<Elem,1>::ShiftedIndexMatrix(const Matrix<Elem,1>& Mat_) : Matrix<Elem,1>(Mat_)
+{
+    indexShift=0;
+}
+
+template<typename Elem>
+ShiftedIndexMatrix<Elem,1>::ShiftedIndexMatrix(Matrix<Elem,1>&& Mat_) :Matrix<Elem,1>(Mat_)
+{
+    indexShift=0;
+}
+
+template<typename Elem>
+ShiftedIndexMatrix<Elem,1>::ShiftedIndexMatrix(const sliceMatrix<Elem,1>& sliceMat) : ShiftedIndexMatrix<Elem,1>(sliceMat)
+{
+}
+
+template<typename Elem>
+ShiftedIndexMatrix<Elem,1>::ShiftedIndexMatrix(sliceMatrix<Elem,1>&& sliceMat) : ShiftedIndexMatrix<Elem,1>(sliceMat)
 {
 }
 
@@ -135,5 +212,19 @@ ShiftedIndexMatrix<Elem,1>& ShiftedIndexMatrix<Elem,1>::operator=(ShiftedIndexMa
         Matrix<Elem,1>::operator=(Mat);
         indexShift=Mat.indexShift;
     }
+    return *this;
+}
+
+template<typename Elem>
+ShiftedIndexMatrix<Elem,1>& ShiftedIndexMatrix<Elem,1>::operator=(const sliceMatrix<Elem,1>& sliceMat)
+{
+    this->operator=(sliceMat.Mat);
+    return *this;
+}
+
+template<typename Elem>
+ShiftedIndexMatrix<Elem,1>& ShiftedIndexMatrix<Elem,1>::operator=(sliceMatrix<Elem,1>&& sliceMat)
+{
+    this->operator=(sliceMat.Mat);
     return *this;
 }
