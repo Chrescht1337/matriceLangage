@@ -110,6 +110,27 @@ sliceMatrix<Elem,dim>::sliceMatrix(ShiftedIndexMatrix<Elem,dim>& Mat_,std::initi
         throw std::invalid_argument("Incompatible boundaries");
 }
 
+template<typename Elem,std::size_t dim>
+sliceMatrix<Elem,dim>::sliceMatrix(const sliceMatrix& slice) : Mat(slice.Mat)
+{
+    restrictions = new std::pair<std::ptrdiff_t,std::ptrdiff_t>[dim];
+    for (std::size_t i=0;i<dim;i++)
+    {
+        restrictions[i]=slice.restrictions[i];
+    }
+    steps=new std::size_t[dim];
+    for (std::size_t i=0;i<dim;i++)
+    {
+        steps[i]=slice.steps[i];
+    }
+}
+
+template<typename Elem,std::size_t dim>
+sliceMatrix<Elem,dim>::sliceMatrix(sliceMatrix&& slice) : Mat(slice.Mat),restrictions(slice.restrictions),steps(slice.steps)
+{
+    slice.steps=nullptr;
+    slice.restrictions=nullptr;
+}
 
 template<typename Elem,std::size_t dim>
 bool sliceMatrix<Elem,dim>::validRestrictions(std::initializer_list<std::pair<std::ptrdiff_t,std::ptrdiff_t>> restrictions_)const
@@ -192,6 +213,39 @@ sliceMatrix<Elem,dim>::~sliceMatrix()
     delete[] restrictions;
 }
 
+template<typename Elem,std::size_t dim>
+sliceOperatHandler<Elem,dim,dim-1> sliceMatrix<Elem,dim>::operator[](std::ptrdiff_t i)
+{
+    if (this->validAccess(0,i))
+    {
+        std::shared_ptr<std::ptrdiff_t> operatValues( new std::ptrdiff_t[dim]);
+        operatValues.get()[0]=Mat.getRealIndex(0,i);
+        return sliceOperatHandler<Elem,dim,dim-1>(*this,operatValues);
+    }
+    else
+        throw std::out_of_range("Invalid Index");
+}
+
+template<typename Elem,std::size_t dim>
+constSliceOperatHandler<Elem,dim,dim-1> sliceMatrix<Elem,dim>::operator[](std::ptrdiff_t i)const
+{
+    if (this->validAccess(0,i))
+    {
+        std::shared_ptr<std::ptrdiff_t> operatValues( new std::ptrdiff_t[dim]);
+        operatValues.get()[0]=Mat.getRealIndex(0,i);
+        return sliceOperatHandler<Elem,dim,dim-1>(*this,operatValues);
+    }
+    else
+        throw std::out_of_range("Invalid Index");
+}
+
+template<typename G,std::size_t g>
+std::ostream& operator<< (std::ostream& out,const sliceMatrix<G,g> slice)
+{
+    out<<slice.Mat;
+    return out;
+}
+
 //=============================================================================
 //Matrice à 1 dimension
 //=============================================================================
@@ -202,7 +256,7 @@ sliceMatrix<Elem,1>::sliceMatrix(Matrix<Elem,1>& Mat_,std::pair<std::ptrdiff_t,s
     if (this->validRestrictions(restrictions_))
     {
         restrictions(restrictions_);
-        step=0;
+        step=1;
     }
     else
         throw std::invalid_argument("Incompatible boundaries");
@@ -229,7 +283,7 @@ sliceMatrix<Elem,1>::sliceMatrix(ShiftedIndexMatrix<Elem,1>& Mat_,std::pair<std:
     if (this->validRestrictions(restrictions_))
     {
         restrictions=restrictions_;
-        step=0;
+        step=1;
     }
     else
         throw std::invalid_argument("Incompatible boundaries");

@@ -262,9 +262,8 @@ Matrix<Elem,1>::Matrix(Elem value,std::size_t dims=1)
 }
 
 template <typename Elem>
-Matrix<Elem,1>::Matrix(const Matrix& Mat) : nbrOfElements(Mat.nbrOfElements)
+Matrix<Elem,1>::Matrix(const Matrix& Mat) : nbrOfElements(Mat.nbrOfElements),dimSize(Mat.dimSize)
 {
-	dimSize=Mat.dimSize;
 	values=new Elem[nbrOfElements];
 	for (size_t i=0;i<nbrOfElements;i++)
 		values[i]=Mat.values[i];

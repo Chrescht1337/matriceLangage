@@ -3,6 +3,8 @@
 #include "constOperatHandler.cpp"
 #include "ShiftedIndexMatrix.cpp"
 #include "sliceMatrix.cpp"
+#include "sliceOperatHandler.cpp"
+#include "constSliceOperatHandler.cpp"
 #include <iostream>
 #include <stdexcept>
 #include <cstddef>
@@ -83,8 +85,12 @@ int main()
 	//sliceMatrix<int,3,3> slic2(4,{3,3,3},{0,0,0});
 	ShiftedIndexMatrix<int,3> utz(slic);
 	std::cout<<utz<<"\n";
-	sliceMatrix<int,1> slic1(e1,{-1,1});
+	const sliceMatrix<int,1> slic1(e1,{-1,1});
+	//slic1[0]=99;
+	std::cout<<slic1[0]<<"\n";
+	slic[-2][-2][-2]=45;
 	ShiftedIndexMatrix<int,3> itz(sliceMatrix<int,3>(indi,{{-3,-1},{-3,-1},{-3,-1}},{1,1,1}));
+	std::cout<<slic<<"\n";
 	return 0;
 
 }

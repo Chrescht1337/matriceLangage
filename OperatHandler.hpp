@@ -26,7 +26,7 @@ class OperatHandler<Elem,dim,1>
         std::shared_ptr<std::ptrdiff_t> operatValues_;
 
     public:
-        OperatHandler(Matrix<Elem,dim>& Mat,std::shared_ptr<std::ptrdiff_t> operatValues);
+        OperatHandler(Matrix<Elem,dim>& Mat,std::shared_ptr<std::ptrdiff_t>& operatValues);
         Elem& operator[](std::ptrdiff_t i);
 };
 

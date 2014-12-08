@@ -18,6 +18,8 @@ class Matrix
         friend class constOperatHandler;
         template <typename D,std::size_t d>
         friend class sliceMatrix;
+        template <typename A,std::size_t a,std::size_t b>
+        friend class sliceOperatHandler;
 
     private:
         inline void displayHelper(std::ostream& out, size_t i,size_t & t)const;

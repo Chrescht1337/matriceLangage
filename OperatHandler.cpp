@@ -29,7 +29,7 @@ OperatHandler<Elem,dim,callsLeft-1> OperatHandler<Elem,dim,callsLeft>::operator[
 //==============================================================================
 
 template <typename Elem,std::size_t dim>
-OperatHandler<Elem,dim,1>::OperatHandler(Matrix<Elem,dim>& Mat,std::shared_ptr<std::ptrdiff_t> operatValues) :M(Mat)
+OperatHandler<Elem,dim,1>::OperatHandler(Matrix<Elem,dim>& Mat,std::shared_ptr<std::ptrdiff_t>& operatValues) :M(Mat)
 {
     operatValues_.swap(operatValues);
 }

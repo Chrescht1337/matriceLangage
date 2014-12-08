@@ -10,6 +10,8 @@ class ShiftedIndexMatrix : public Matrix<Elem,dim>
 {
         template <typename D,std::size_t d>
         friend class sliceMatrix;
+        template <typename T,std::size_t t,std::size_t g>
+        friend class sliceOperatHandler;
     private:
         std::ptrdiff_t* indexShift;
         bool validIndex(std::size_t dimension,std::ptrdiff_t index)const override;
