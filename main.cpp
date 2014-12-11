@@ -11,8 +11,7 @@
 #include <memory>
 #include <utility>
 
-int main()
-{
+int main(){
 	std::cout<<"Tests :"<<std::endl;
 	std::cout<<"==================================================="<<std::endl;
 	std::cout<<"Construction d'une matrice à 4 composantes: ";
