@@ -19,13 +19,11 @@ class Matrix{
     friend class sliceMatrix;
     template <typename A,std::size_t a,std::size_t b>
     friend class sliceOperatHandler;
-
   private:
     inline void displayHelper(std::ostream& out, size_t i,size_t & t)const;
     Elem * values;
     std::size_t nbrOfElements;
     std::size_t* dimSizes;
-
     bool validDimensions(std::initializer_list<std::size_t> dims)const;
     virtual bool validIndex(std::size_t dimension,std::ptrdiff_t index)const;
     virtual std::size_t getRealIndex(std::size_t dimension,std::ptrdiff_t index)const;
@@ -55,7 +53,6 @@ class Matrix<Elem,1>{
     Elem * values;
     std::size_t nbrOfElements;
     std::size_t dimSize;
-
     virtual bool validIndex(std::ptrdiff_t index)const;
     virtual std::size_t getRealIndex(std::ptrdiff_t index)const;
   public:

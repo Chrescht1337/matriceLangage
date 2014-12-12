@@ -25,6 +25,4 @@ class constOperatHandler<Elem,dim,1>{
     constOperatHandler(const Matrix<Elem,dim>& Mat,std::shared_ptr<std::ptrdiff_t> operatValues);
     const Elem& operator[](std::ptrdiff_t i);
 };
-
-
 #endif
