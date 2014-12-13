@@ -152,7 +152,6 @@ Matrix<Elem,dim>& Matrix<Elem,dim>::operator=(Matrix&& Mat){
 		Mat.dimSizes=nullptr;
 		Mat.values=nullptr;
 	}
-	std::cout<<" operator= &&\n";
 	return *this;
 }
 
@@ -314,8 +313,11 @@ Elem& Matrix<Elem,1>::operator[](std::ptrdiff_t i){
 template <typename T>
 std::ostream& operator<< (std::ostream& out, const Matrix<T,1>& M){
 	out<<"[ ";
-	for (size_t i=0;i<M.dimSize;i++)
+	for (size_t i=0;i<M.dimSize;i++){
 		out<<M.values[i];
+		if (i<M.dimSize-1)
+			out<<",";
+		}
 	out<<" ]";
 	return out;
 }
