@@ -41,7 +41,7 @@ sliceMatrix<Elem,dim>::sliceMatrix(Matrix<Elem,dim>& Mat_,std::initializer_list<
       }
     }
     else
-      throw std::range_error("Incomplete step-list");
+      throw std::range_error("Incompatible step-list");
   }
   else
     throw std::invalid_argument("Incompatible boundaries");
@@ -82,7 +82,7 @@ sliceMatrix<Elem,dim>::sliceMatrix(ShiftedIndexMatrix<Elem,dim>& Mat_,std::initi
       }
     }
     else
-      throw std::range_error("Incomplete step-list");
+      throw std::range_error("Incompatible step-list");
   }
   else
     throw std::invalid_argument("Incompatible boundaries");
@@ -211,7 +211,7 @@ std::ostream& operator<< (std::ostream& out,const sliceMatrix<G,g> slice){
 template<typename Elem>
 sliceMatrix<Elem,1>::sliceMatrix(Matrix<Elem,1>& Mat_,std::pair<std::ptrdiff_t,std::ptrdiff_t> restrictions_) : Mat(Mat_){
   if (this->validRestrictions(restrictions_)){
-    restrictions(restrictions_);
+    restrictions=restrictions_;
     step=1;
   }
   else
@@ -252,6 +252,16 @@ sliceMatrix<Elem,1>::sliceMatrix(ShiftedIndexMatrix<Elem,1>& Mat_,std::pair<std:
   }
   else
     throw std::invalid_argument("Incompatible boundaries");
+}
+
+template<typename Elem>
+sliceMatrix<Elem,1>::sliceMatrix(const sliceMatrix& slice) : Mat(slice.Mat),step(slice.step),restrictions(slice.restrictions)
+{
+}
+
+template<typename Elem>
+sliceMatrix<Elem,1>::sliceMatrix(sliceMatrix&& slice) : Mat(slice.Mat),step(slice.step),restrictions(slice.restrictions)
+{
 }
 
 template<typename Elem>

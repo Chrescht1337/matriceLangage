@@ -22,7 +22,7 @@ class sliceMatrix{
     template <typename G,std::size_t g>
     friend std::ostream& operator<< (std::ostream&,const sliceMatrix<G,g>);
   private:
-    ShiftedIndexMatrix<Elem,dim>& Mat;
+    Matrix<Elem,dim>& Mat;
     std::pair<std::ptrdiff_t,std::ptrdiff_t>* restrictions;
     std::size_t* steps;
     bool validRestrictions(std::initializer_list<std::pair<std::ptrdiff_t,std::ptrdiff_t>>)const;
@@ -44,7 +44,7 @@ class sliceMatrix{
 template <typename Elem>
 class sliceMatrix<Elem,1>{
   private:
-    ShiftedIndexMatrix<Elem,1>& Mat;
+    Matrix<Elem,1>& Mat;
     std::size_t step;
     std::pair<std::ptrdiff_t,std::ptrdiff_t> restrictions;
     bool validRestrictions(std::pair<std::ptrdiff_t,std::ptrdiff_t>)const;
@@ -54,6 +54,8 @@ class sliceMatrix<Elem,1>{
     sliceMatrix(Matrix<Elem,1>&,std::pair<std::ptrdiff_t,std::ptrdiff_t>,std::size_t);
     sliceMatrix(ShiftedIndexMatrix<Elem,1>&,std::pair<std::ptrdiff_t,std::ptrdiff_t>);
     sliceMatrix(ShiftedIndexMatrix<Elem,1>&,std::pair<std::ptrdiff_t,std::ptrdiff_t>,std::size_t);
+    sliceMatrix(const sliceMatrix&);
+    sliceMatrix(sliceMatrix&&);
     Elem& operator[](std::ptrdiff_t);
     const Elem& operator[](std::ptrdiff_t)const;
 };
