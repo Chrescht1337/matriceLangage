@@ -192,7 +192,7 @@ constSliceOperatHandler<Elem,dim,dim-1> sliceMatrix<Elem,dim>::operator[](std::p
   if (this->validAccess(0,i)){
     std::shared_ptr<std::ptrdiff_t> operatValues( new std::ptrdiff_t[dim]);
     operatValues.get()[0]=Mat.getRealIndex(0,i);
-    return sliceOperatHandler<Elem,dim,dim-1>(*this,operatValues);
+    return constSliceOperatHandler<Elem,dim,dim-1>(*this,operatValues);
   }
   else
     throw std::out_of_range("Invalid Index");

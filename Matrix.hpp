@@ -19,6 +19,8 @@ class Matrix{
     friend class sliceMatrix;
     template <typename A,std::size_t a,std::size_t b>
     friend class sliceOperatHandler;
+    template <typename B,std::size_t c,std::size_t k>
+    friend class constSliceOperatHandler;
   private:
     inline void displayHelper(std::ostream& out, size_t i,size_t & t)const;
     Elem * values;
@@ -33,7 +35,7 @@ class Matrix{
     Matrix(const Matrix& Mat);
     Matrix(Matrix&& Mat);
     Matrix();
-    ~Matrix();
+    virtual ~Matrix();
     inline size_t getSizeOfDimension(std::size_t i)const;
     inline size_t getNbrOfDimensions() const;
     inline size_t getNbrOfElements() const;
@@ -59,7 +61,7 @@ class Matrix<Elem,1>{
     Matrix(Elem value,std::size_t dims);
     Matrix(const Matrix& Mat);
     Matrix(Matrix&& Mat);
-    ~Matrix();
+    virtual ~Matrix();
     inline size_t getSizeOfDimension()const;
     inline size_t getNbrOfDimensions() const;
     inline size_t getNbrOfElements() const;

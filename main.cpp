@@ -100,8 +100,26 @@ int main(){
 		ShiftedIndexMatrix<int,1> sm7(sm6);
 		ShiftedIndexMatrix<int,1> sm8=ShiftedIndexMatrix<int,1>(-5,12,20);
 		Matrix<int,1> m7(27,10);
-		ShiftedIndexMatrix<int,1> sm4(m7);
-		ShiftedIndexMatrix<int,1> sm5=Matrix<int,1>(3,10);
+		ShiftedIndexMatrix<int,1> sm9(m7);
+		ShiftedIndexMatrix<int,1> sm10=Matrix<int,1>(3,10);
+	}
+	catch (std::exception& e){
+		std::cout<<"Exception : "<<e.what()<<"\n";
+	}
+	std::cout<<"réussite\n";
+
+	std::cout<<"Construction d'une matrice constante à 3 composantes avec indices décalés utilisant des données correctes : \n";
+	try{
+		ShiftedIndexMatrix<int,3> const sm1(10,{2,2,2},{5,5,5});
+	}
+	catch (std::exception& e){
+		std::cout<<"Exception : "<<e.what()<<"\n";
+	}
+	std::cout<<"réussite\n";
+
+	std::cout<<"Construction d'une matrice constante à 1 composante avec indices décalés utilisant des données correctes : \n";
+	try{
+		ShiftedIndexMatrix<int,1> const sm6(10,8,-8);
 	}
 	catch (std::exception& e){
 		std::cout<<"Exception : "<<e.what()<<"\n";
@@ -155,14 +173,55 @@ int main(){
 	slm1[0][0][0][0]=27;
 	std::cout<<slm1<<"\n";
 
-	std::cout<<"Assignation de slm1 à une matrice sm7 à index décalés : \n";
+	std::cout<<"Assignations de tranches à des matrices à index décalés : \n";
 	try{
-		ShiftedIndexMatrix<int,4> sm7(slm1);
+		Matrix<int,4> m1(1,{1,2,3,4});
+		ShiftedIndexMatrix<int,4> sm8=sliceMatrix<int,4>(m1,{{0,0},{0,1},{0,1},{0,1}});
+		sm8[0][0][0][0]=22;
+		std::cout<<sm8<<"\n";
 	}
 	catch (std::exception& e){
 		std::cout<<"Exception : "<<e.what()<<"\n\n";
 	}
 	std::cout<<"réussite\n";
+
+	std::cout<<"Essais d'accéder aux éléments des différents matrices : \n";
+	try{
+		Matrix<int,4> m3(7,{2,2,2,2});
+		m3[0][0][0][0]=-11;
+		Matrix<int,4> const m20(7,{2,2,2,2});
+		m20[0][0][0][0]==7;
+		Matrix<int,1> m4(0,10);
+		m4[0]=4;
+		Matrix<int,1> const m40(0,10);
+		if (m40[0]==0)
+			std::cout<<"Operateur [] réussi\n";
+		ShiftedIndexMatrix<int,3> sm1(10,{2,2,2},{5,5,5});
+		sm1[6][6][6]=111;
+		ShiftedIndexMatrix<int,3> const sm20(10,{2,2,2},{5,5,5});
+		if (sm20[6][6][6]==10)
+			std::cout<<"Operateur [] réussi\n";
+		ShiftedIndexMatrix<int,1> sm6(10,8,-8);
+		sm6[-4]=20;
+		ShiftedIndexMatrix<int,1> const sm60(10,8,-8);
+		if (sm60[-4]==10)
+			std::cout<<"Operateur [] réussi\n";
+		sliceMatrix<int,4> slm1(m3,{{0,1},{0,1},{0,1},{0,1}});
+		slm1[0][0][0][0]=90;
+		sliceMatrix<int,4> const slm10(m3,{{0,1},{0,1},{0,1},{0,1}});
+		if (slm10[0][0][0][0]==7)
+			std::cout<<"Operateur [] réussi\n";
+
+
+	}
+	catch (std::exception& e){
+		std::cout<<"Exception : "<<e.what()<<"\n";
+	}
+	std::cout<<"réussite\n";
+
+	Matrix<int,2>* mmm;
+	mmm= new ShiftedIndexMatrix<int,2>(5,{2,2},{1,1});
+	delete mmm;
 	return 0;
 
 }
